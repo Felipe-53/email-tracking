@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id     String  @id @map("_id")
+  name   String
+  googleId String @unique
+  email  String? @unique
+  emails Email[]
+
+  @@map("users")
+}
+
+model Email {
+  id           String        @id @map("_id")
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  title        String
+  emailUpdates EmailUpdate[]
+
+  @@map("emails")
+}
+
+enum Event {
+  CREATED
+  REGISTERED
+  OPENED
+}
+
+model EmailUpdate {
+  id        String   @id @map("_id")
+  emailId   String
+  event     Event
+  timestamp DateTime @default(now())
+  email     Email    @relation(fields: [emailId], references: [id])
+
+  @@map("email_updates")
+}
