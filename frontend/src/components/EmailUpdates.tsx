@@ -14,7 +14,6 @@ const eventNameMap = {
 };
 
 const EmailUpdates: React.FC<Props> = ({ email }) => {
-  if (!email) return null;
   const [copied, setCopied] = useState(false);
 
   const timerRef = useRef<null | number>(null);
@@ -26,6 +25,8 @@ const EmailUpdates: React.FC<Props> = ({ email }) => {
       }, 2500);
     }
   }, [copied]);
+
+  if (!email) return null;
 
   email.emailUpdates = email.emailUpdates.sort((a, b) => {
     const aDate = new Date(a.timestamp);
