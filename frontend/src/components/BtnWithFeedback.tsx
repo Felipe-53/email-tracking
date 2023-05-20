@@ -20,8 +20,8 @@ const BtnWithFeedback = ({
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
+    clearTimeout(timerRef.current || -1);
     if (copied) {
-      typeof timerRef == "number" && clearTimeout(timerRef);
       timerRef.current = setTimeout(() => {
         setCopied(false);
       }, feedbackProps.timeout);
@@ -30,8 +30,8 @@ const BtnWithFeedback = ({
 
   return (
     <button
-      className="relative font-bold btn btn-sm btn-primary"
       className="relative font-bold btn btn-sm btn-secondary"
+      onClick={(e) => {
         onClick(e);
         setCopied(true);
       }}
