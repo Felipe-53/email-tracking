@@ -1,11 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Email } from "../screens/EmailTracker";
 import { toDateTimeString } from "../utils/toDateTimeString";
 import { BtnWithFeedback } from "./BtnWithFeedback";
+import { fetchJson } from "../utils/fetchJson";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 interface Props {
   email: Email | null;
+  updateEmail: (email: Email) => void;
 }
 
 const eventNameMap = {
@@ -14,20 +16,34 @@ const eventNameMap = {
   OPENED: "Aberto",
 };
 
-const EmailUpdates: React.FC<Props> = ({ email }) => {
-  const [copied, setCopied] = useState(false);
+type FetchState = "idle" | "loading" | "error";
 
-  const timerRef = useRef<null | number>(null);
+const EmailUpdates: React.FC<Props> = ({ updateEmail, email }) => {
+  const [fetchState, setFetchState] = useState<FetchState>("idle");
 
   useEffect(() => {
-    if (copied) {
-      timerRef.current = setTimeout(() => {
-        setCopied(false);
-      }, 2500);
+    if (fetchState === "error") {
+      setTimeout(() => {
+        setFetchState("idle");
+      }, 2000);
     }
-  }, [copied]);
+  }, [fetchState]);
 
   if (!email) return null;
+
+  async function refreshEmail() {
+    setFetchState("loading");
+    try {
+      const updated = await fetchJson<{ data: Email }>(
+        `/emails/${email!.id}`,
+        {}
+      );
+      updateEmail(updated.data);
+      setFetchState("idle");
+    } catch {
+      setFetchState("error");
+    }
+  }
 
   email.emailUpdates = email.emailUpdates.sort((a, b) => {
     const aDate = new Date(a.timestamp);
@@ -40,7 +56,16 @@ const EmailUpdates: React.FC<Props> = ({ email }) => {
 
   let actionButton;
   if (emailUpdatesCount > 1) {
-    actionButton = <></>;
+    actionButton = (
+      <button
+        onClick={refreshEmail}
+        className={`btn btn-primary btn-sm relative ${
+          fetchState === "loading" ? "btn-disabled" : ""
+        }`}
+      >
+        {fetchState === "loading" ? "Carregando..." : "Atualizar"}
+      </button>
+    );
   } else {
     actionButton = (
       <BtnWithFeedback
@@ -62,7 +87,7 @@ const EmailUpdates: React.FC<Props> = ({ email }) => {
     <div className="flex flex-col gap-8">
       <h2 className="font-bold text-3xl text-center">{email.title}</h2>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-4">
         <table className="table">
           <thead>
             <tr>

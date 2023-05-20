@@ -38,6 +38,20 @@ const EmailTracker = () => {
     });
   }, []);
 
+  function updateEmail(email: Email) {
+    setEmails((prev) => {
+      if (prev) {
+        return prev.map((e) => {
+          if (e.id === email.id) {
+            return email;
+          }
+          return e;
+        });
+      }
+      return prev;
+    });
+  }
+
   return (
     <div className="flex flex-col items-center gap-8 pt-8">
       <h1 className="text-center font-bold text-4xl">SEUS EMAILS</h1>
@@ -46,7 +60,7 @@ const EmailTracker = () => {
         open={!!selectedEmail}
         onClose={() => setSelectedEmail(null)}
       >
-        <EmailUpdates email={selectedEmail} />
+        <EmailUpdates email={selectedEmail} updateEmail={updateEmail} />
       </StyledDialog>
 
       <StyledDialog
