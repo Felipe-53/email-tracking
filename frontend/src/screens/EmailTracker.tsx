@@ -38,6 +38,13 @@ const EmailTracker = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (selectedEmail) {
+      const selected = emails?.find((e) => e.id === selectedEmail.id);
+      setSelectedEmail(selected ? selected : null);
+    }
+  }, [emails]);
+
   function updateEmail(email: Email) {
     setEmails((prev) => {
       if (prev) {
