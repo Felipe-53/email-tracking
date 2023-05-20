@@ -7,6 +7,10 @@ import {
 import { listEmailTrackersHandler } from "../controllers/listEmailTrackers";
 import { trackingHandler, trackingSchema } from "../controllers/tracking";
 import { signInHandler, signInSchema } from "../controllers/signIn";
+import {
+  getEmailTrackerHandler,
+  getEmailTrackerSchema,
+} from "../controllers/getEmailsTracker";
 
 const openRoutes: FastifyPluginAsync = async (app, opts) => {
   app.route({
@@ -35,6 +39,15 @@ const authRoutes: FastifyPluginAsync = async (app) => {
     url: "/emails",
     method: "GET",
     handler: listEmailTrackersHandler,
+  });
+
+  app.route({
+    url: "/emails/:id",
+    method: "GET",
+    handler: getEmailTrackerHandler,
+    schema: {
+      params: getEmailTrackerSchema,
+    },
   });
 
   app.route({
