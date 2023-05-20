@@ -60,7 +60,7 @@ const EmailTracker = () => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-8 pt-8">
+    <div className="flex flex-col items-center gap-8 py-8">
       <h1 className="text-center font-bold text-4xl">SEUS EMAILS</h1>
 
       <StyledDialog
