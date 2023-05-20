@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Email } from "../screens/EmailTracker";
 import { toDateTimeString } from "../utils/toDateTimeString";
 import { BtnWithFeedback } from "./BtnWithFeedback";
 import { fetchJson } from "../utils/fetchJson";
+import FetchBtn from "./FetchBtn";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 interface Props {
@@ -16,33 +17,17 @@ const eventNameMap = {
   OPENED: "Aberto",
 };
 
-type FetchState = "idle" | "loading" | "error";
-
 const EmailUpdates: React.FC<Props> = ({ updateEmail, email }) => {
-  const [fetchState, setFetchState] = useState<FetchState>("idle");
-
-  useEffect(() => {
-    if (fetchState === "error") {
-      setTimeout(() => {
-        setFetchState("idle");
-      }, 2000);
-    }
-  }, [fetchState]);
-
   if (!email) return null;
 
   async function refreshEmail() {
-    setFetchState("loading");
-    try {
-      const updated = await fetchJson<{ data: Email }>(
-        `/emails/${email!.id}`,
-        {}
-      );
-      updateEmail(updated.data);
-      setFetchState("idle");
-    } catch {
-      setFetchState("error");
-    }
+    const updated = await fetchJson<{ data: Email }>(
+      `/emails/${email!.id}`,
+      {}
+    );
+
+    console.log(updated);
+    updateEmail(updated.data);
   }
 
   email.emailUpdates = email.emailUpdates.sort((a, b) => {
@@ -54,24 +39,13 @@ const EmailUpdates: React.FC<Props> = ({ updateEmail, email }) => {
 
   const emailUpdatesCount = email.emailUpdates.length;
 
-  let actionButton;
-  if (emailUpdatesCount > 1) {
-    actionButton = (
-      <button
-        onClick={refreshEmail}
-        className={`btn btn-primary btn-sm relative ${
-          fetchState === "loading" ? "btn-disabled" : ""
-        }`}
-      >
-        {fetchState === "loading" ? "Carregando..." : "Atualizar"}
-      </button>
-    );
-  } else {
-    actionButton = (
+  let copyLinkBtn: JSX.Element | null = null;
+  if (emailUpdatesCount < 2) {
+    copyLinkBtn = (
       <BtnWithFeedback
         feedbackProps={{
           message: "copiado!",
-          timeout: 2500,
+          timeout: 1000,
         }}
         onClick={(e) => {
           e.stopPropagation();
@@ -87,30 +61,30 @@ const EmailUpdates: React.FC<Props> = ({ updateEmail, email }) => {
     <div className="flex flex-col gap-8">
       <h2 className="font-bold text-3xl text-center">{email.title}</h2>
 
-      <div className="flex flex-col gap-4">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Evento</th>
-              <th>Data</th>
-            </tr>
-          </thead>
-          <tbody>
-            {email.emailUpdates.map((update) => {
-              const updateDateTime = new Date(update.timestamp);
+      {copyLinkBtn}
 
-              return (
-                <tr key={update.id}>
-                  <th>{eventNameMap[update.event]}</th>
-                  <th>{toDateTimeString(updateDateTime)}</th>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Evento</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          {email.emailUpdates.map((update) => {
+            const updateDateTime = new Date(update.timestamp);
 
-        {actionButton}
-      </div>
+            return (
+              <tr key={update.id}>
+                <th>{eventNameMap[update.event]}</th>
+                <th>{toDateTimeString(updateDateTime)}</th>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+
+      <FetchBtn fetchFunction={refreshEmail} />
     </div>
   );
 };
