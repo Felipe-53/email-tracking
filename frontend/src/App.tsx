@@ -33,7 +33,7 @@ function App() {
   };
 
   return (
-    <div className="bg-zinc-800 text-gray-50 absolute inset-0 pb-8">
+    <div className="bg-zinc-800 text-gray-50 absolute inset-0 overflow-auto">
       {map[screen]}
     </div>
   );
