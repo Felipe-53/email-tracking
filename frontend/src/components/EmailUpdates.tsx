@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Email } from "../screens/EmailTracker";
 import { toDateTimeString } from "../utils/toDateTimeString";
+import { BtnWithFeedback } from "./BtnWithFeedback";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 interface Props {
@@ -35,6 +36,28 @@ const EmailUpdates: React.FC<Props> = ({ email }) => {
     return aDate.getTime() - bDate.getTime();
   });
 
+  const emailUpdatesCount = email.emailUpdates.length;
+
+  let actionButton;
+  if (emailUpdatesCount > 1) {
+    actionButton = <></>;
+  } else {
+    actionButton = (
+      <BtnWithFeedback
+        feedbackProps={{
+          message: "copiado!",
+          timeout: 2500,
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          navigator.clipboard.writeText(`${baseUrl}/tracking?id=${email.id}`);
+        }}
+      >
+        link
+      </BtnWithFeedback>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <h2 className="font-bold text-3xl text-center">{email.title}</h2>
@@ -61,26 +84,7 @@ const EmailUpdates: React.FC<Props> = ({ email }) => {
           </tbody>
         </table>
 
-        {email.emailUpdates.length === 1 && (
-          <button
-            className=" relative px-2 font-bold btn btn-sm btn-primary my-4 "
-            onClick={(e) => {
-              e.stopPropagation();
-              navigator.clipboard.writeText(
-                `${baseUrl}/tracking?id=${email.id}`
-              );
-              if (timerRef.current) clearTimeout(timerRef.current);
-              setCopied(true);
-            }}
-          >
-            Link
-            {copied && (
-              <span className="absolute -bottom-6 lowercase text-green-600">
-                Copiado!
-              </span>
-            )}
-          </button>
-        )}
+        {actionButton}
       </div>
     </div>
   );
