@@ -30,7 +30,7 @@ const BtnWithFeedback = ({
 
   return (
     <button
-      className="relative px-2 font-bold btn btn-sm btn-primary my-4"
+      className="relative font-bold btn btn-sm btn-primary"
       onClick={(e) => {
         onClick(e);
         setCopied(true);
