@@ -38,7 +38,7 @@ const CopyTrackerBtn: React.FC<Props> = ({ email }) => {
         navigator.clipboard.writeText(trackerScript());
       }}
     >
-      link
+      script
     </BtnWithFeedback>
   );
 };
