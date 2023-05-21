@@ -19,7 +19,10 @@ const CopyTrackerBtn: React.FC<Props> = ({ email }) => {
       const trackerImage = '<img src="${baseUrl}/tracking?id=${email.id}" />';
     
       emailBody.innerHTML = emailBody.innerHTML + trackerImage;
-    }`;
+    }
+    
+    addTrackerToEmail();
+    `;
   }
 
   return (
