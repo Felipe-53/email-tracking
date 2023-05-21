@@ -1,10 +1,9 @@
 import React from "react";
 import { Email } from "../types";
 import { toDateTimeString } from "../utils/toDateTimeString";
-import { BtnWithFeedback } from "./BtnWithFeedback";
 import { fetchJson } from "../utils/fetchJson";
 import FetchBtn from "./FetchBtn";
-const baseUrl = import.meta.env.VITE_BASE_URL;
+import { CopyTrackerBtn } from "./CopyTrackerBtn";
 
 interface Props {
   email: Email | null;
@@ -39,29 +38,16 @@ const EmailUpdates: React.FC<Props> = ({ updateEmail, email }) => {
 
   const emailUpdatesCount = email.emailUpdates.length;
 
-  let copyLinkBtn: JSX.Element | null = null;
+  let copyTrackerBtn: JSX.Element | null = null;
   if (emailUpdatesCount < 2) {
-    copyLinkBtn = (
-      <BtnWithFeedback
-        feedbackProps={{
-          message: "copiado!",
-          timeout: 1000,
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-          navigator.clipboard.writeText(`${baseUrl}/tracking?id=${email.id}`);
-        }}
-      >
-        link
-      </BtnWithFeedback>
-    );
+    copyTrackerBtn = <CopyTrackerBtn email={email} />;
   }
 
   return (
     <div className="flex flex-col gap-8">
       <h2 className="font-bold text-3xl text-center">{email.title}</h2>
 
-      {copyLinkBtn}
+      {copyTrackerBtn}
 
       <table className="table">
         <thead>
