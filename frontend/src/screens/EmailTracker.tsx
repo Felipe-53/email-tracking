@@ -4,18 +4,7 @@ import EmailUpdates from "../components/EmailUpdates";
 import NewTracker from "../components/NewTracker";
 import StyledDialog from "../components/Dialog";
 import TrackerList from "../components/TrackerList";
-
-export interface Email {
-  id: string;
-  title: string;
-  emailUpdates: EmailUpdate[];
-}
-
-export interface EmailUpdate {
-  id: string;
-  event: "CREATED" | "REGISTERED" | "OPENED";
-  timestamp: string;
-}
+import { Email } from "../types";
 
 const EmailTracker = () => {
   const [emails, setEmails] = useState<Email[] | null>(null);

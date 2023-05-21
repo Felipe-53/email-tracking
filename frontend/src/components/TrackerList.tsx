@@ -1,5 +1,5 @@
 import React from "react";
-import { Email } from "../screens/EmailTracker";
+import { Email } from "../types";
 
 interface Props {
   emails: Email[] | null;

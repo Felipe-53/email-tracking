@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { fetchJson } from "../utils/fetchJson";
-import { Email } from "../screens/EmailTracker";
+import { Email } from "../types";
 
 type Status = "idle" | "loading" | "created" | "error";
 

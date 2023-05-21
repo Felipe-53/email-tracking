@@ -1,5 +1,5 @@
 import React from "react";
-import { Email } from "../screens/EmailTracker";
+import { Email } from "../types";
 import { toDateTimeString } from "../utils/toDateTimeString";
 import { BtnWithFeedback } from "./BtnWithFeedback";
 import { fetchJson } from "../utils/fetchJson";
