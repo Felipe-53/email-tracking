@@ -1,13 +1,15 @@
 import React from "react";
 import { BtnWithFeedback } from "./BtnWithFeedback";
 import { Email } from "../types";
-const baseUrl = import.meta.env.VITE_BASE_URL;
+import { env } from "../env";
 
 interface Props {
   email: Email;
 }
 
 const CopyTrackerBtn: React.FC<Props> = ({ email }) => {
+  const { baseUrl } = env;
+
   function trackerScript() {
     return `function addTrackerToEmail() {
       const emailBody = document.querySelector('div[role="textbox"]');
